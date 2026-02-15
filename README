@@ -20,6 +20,52 @@ Modified RTL-SDR Blog Version
 5) Support added for R828D RTL-SDR Blog V4 based dongles.
 6) Auto direct sampling. For R820T/R860 dongles like the RTL-SDR Blog V3 the code will automatically change to direct sampling mode when the frequency is below 24 MHz. It will also automatically change back to normal sampling when the frequency is above 24 MHz. There is no need to manually change the sampling mode anymore for these dongles.
 
+7) NEW: rtl_arib_std_t98 - ARIB STD-T98 Digital Convenience Radio demodulator for Japan's 351 MHz band.
+
+****************************
+rtl_arib_std_t98 - ARIB STD-T98 Demodulator
+****************************
+
+Demodulates Japan's Digital Convenience Radio (デジタル簡易無線) signals on
+the 351 MHz band using π/4-QPSK modulation per ARIB STD-T98 specification.
+
+Technical Specifications:
+  - Frequency Band:     351.03125 - 351.63125 MHz
+  - Channel Spacing:    6.25 kHz
+  - Modulation:         π/4-QPSK (differential)
+  - Symbol Rate:        4,800 symbols/sec
+  - Bit Rate:           9,600 bps
+  - Roll-off Factor:    0.2
+  - Frame Length:       40 ms (384 bits)
+
+Usage:
+  rtl_arib_std_t98 -c 15              # Monitor calling channel
+  rtl_arib_std_t98 -c 15 -v out.bin   # Verbose output to file
+  rtl_arib_std_t98 -f 351287500       # Direct frequency
+
+Options:
+  -c channel   Channel number 1-82 (default: 15 calling channel)
+  -f freq      Direct frequency in Hz (overrides -c)
+  -d device    RTL-SDR device index (default: 0)
+  -g gain      Tuner gain in dB (default: auto)
+  -p ppm       PPM error correction
+  -T           Enable bias-T
+  -r           Raw symbol output (no decoding)
+  -v           Verbose output
+
+Features:
+  - Root Raised Cosine matched filtering (α=0.2)
+  - Sync word detection (SC: 20-bit, SB0: 32-bit)
+  - Frame synchronization
+  - PN(9,5) descrambler
+  - Viterbi decoder (R=1/2, K=6)
+  - CRC-6 error detection
+
+⚠️  Legal Notice: In Japan, operating on these frequencies requires proper
+licensing. Always comply with local radio regulations.
+
+Reference: https://github.com/tanakasan3/ARIB_STD-T98
+
 BIAS TEE NOTE: Always take care that you do not enable the bias tee when the device is connected to a short circuited antenna unless there is an inline LNA. However. if you did by accident, don't worry as the circuit is dually protected with a self-resetting thermal fuse and built in protection on the LDO. Just try not to short it out for days at a time, otherwise you could eventually degrade the thermal fuse.
 
 Note that hack 3) will only work if your system is using this driver. If your system or software is using another driver fork, then the EEPROM information will not be read. So make sure you completely clean your system of the previous drivers first (with the information below) and ensure you run sudo make install after compiling. On Windows, make sure you are using this code's rtlsdr.dll file.
